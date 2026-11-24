@@ -1,0 +1,27 @@
+{
+  "form": {
+    "seriesName": "运营中心 · 能力进阶计划",
+    "topic": "跨境仓储的旺季运营节奏",
+    "courseFormat": "线上培训",
+    "trainingLocation": "",
+    "instructorName": "示例讲师",
+    "instructorBio": "运营部 高级经理",
+    "instructorPhoto": "",
+    "highlights": [
+      "旺季履约节奏拆解",
+      "仓内人效与排班模型"
+    ],
+    "targetAudience": "仓储主管 / 运营专员",
+    "trainingDate": "2026-11-26",
+    "timeBeijing": "19:00",
+    "timeBeijingEnd": "20:30",
+    "includeEuropeTime": true,
+    "includeUsWestTime": false,
+    "includeUsEastTime": true,
+    "qrcodeImage": "",
+    "signupLink": ""
+  },
+  "template": {
+    "mode": "blue"
+  }
+}

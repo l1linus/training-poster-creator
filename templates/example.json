@@ -1,0 +1,31 @@
+{
+  "form": {
+    "seriesName": "产品运营训练营-第18场",
+    "topic": "用数据讲好业务故事",
+    "courseFormat": "线上培训",
+    "trainingLocation": "",
+    "instructorName": "林晓",
+    "instructorBio": "产品运营部",
+    "instructorPhoto": "",
+    "highlights": [
+      "掌握指标拆解方法",
+      "用数据讲清业务结论",
+      "复盘真实业务案例"
+    ],
+    "targetAudience": "全体运营同事",
+    "trainingDate": "2026-12-18",
+    "timeBeijing": "19:00",
+    "timeBeijingEnd": "20:00",
+    "includeEuropeTime": true,
+    "includeUsWestTime": false,
+    "includeUsEastTime": false,
+    "qrcodeImage": "",
+    "signupLink": ""
+  },
+  "template": {
+    "mode": "blue",
+    "assetImage": "",
+    "style": null,
+    "manualStyle": null
+  }
+}

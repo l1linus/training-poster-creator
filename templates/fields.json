@@ -1,0 +1,164 @@
+{
+  "poster": {
+    "width": 750,
+    "height": "随内容自适应(约 1100-1700)",
+    "output": "PNG, 默认 2 倍图(1500px 宽)",
+    "layout": "系列名 → 主题 → 讲师(圆环头像) → 课程亮点 → 适合对象 → 时间 + 二维码"
+  },
+  "form": [
+    {
+      "key": "seriesName",
+      "label": "系列名称",
+      "type": "string",
+      "required": false,
+      "example": "产品运营训练营-第18场",
+      "note": "顶部青色小字"
+    },
+    {
+      "key": "topic",
+      "label": "培训主题",
+      "type": "string",
+      "required": true,
+      "example": "用数据讲好业务故事",
+      "note": "主标题, 50px 粗体; 建议 10-20 字, 过长会换行撑高海报"
+    },
+    {
+      "key": "courseFormat",
+      "label": "课程形式",
+      "type": "string",
+      "required": false,
+      "default": "线上培训",
+      "enum": ["线上培训", "线下培训"],
+      "note": "线下培训时右下角显示培训地点, 不显示二维码"
+    },
+    {
+      "key": "trainingLocation",
+      "label": "培训地点",
+      "type": "string",
+      "required": false,
+      "note": "courseFormat=线下培训 时必填"
+    },
+    {
+      "key": "instructorName",
+      "label": "讲师姓名",
+      "type": "string",
+      "required": false
+    },
+    {
+      "key": "instructorBio",
+      "label": "讲师简介/部门",
+      "type": "string",
+      "required": false,
+      "example": "产品运营部"
+    },
+    {
+      "key": "instructorPhoto",
+      "label": "讲师照片",
+      "type": "string",
+      "required": false,
+      "note": "本地图片路径或 dataURL(不支持 http 外链); 支持 png/jpg/webp; 留空使用内置剪影占位图"
+    },
+    {
+      "key": "highlights",
+      "label": "课程亮点",
+      "type": "string[]",
+      "required": false,
+      "note": "多条会合并到同一个「课程亮点」块逐行展示, 建议 2-4 条, 单条不超过 30 字"
+    },
+    {
+      "key": "targetAudience",
+      "label": "适合对象",
+      "type": "string",
+      "required": false,
+      "example": "全体一线运营同事"
+    },
+    {
+      "key": "trainingDate",
+      "label": "培训日期",
+      "type": "string",
+      "format": "YYYY-MM-DD",
+      "required": false,
+      "note": "海报显示为 M月d日; 用于多时区换算, 每个时区行会显示当地日期"
+    },
+    {
+      "key": "timeBeijing",
+      "label": "北京时间-开始",
+      "type": "string",
+      "format": "HH:mm",
+      "required": false,
+      "example": "19:00"
+    },
+    {
+      "key": "timeBeijingEnd",
+      "label": "北京时间-结束",
+      "type": "string",
+      "format": "HH:mm",
+      "required": false,
+      "example": "20:00"
+    },
+    {
+      "key": "includeEuropeTime",
+      "label": "显示欧中时间",
+      "type": "boolean",
+      "default": true,
+      "note": "由北京时间自动换算, 自动标注夏令时/冬令时"
+    },
+    {
+      "key": "includeUsWestTime",
+      "label": "显示美西时间",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "key": "includeUsEastTime",
+      "label": "显示美东时间",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "key": "qrcodeImage",
+      "label": "报名二维码",
+      "type": "string",
+      "required": false,
+      "note": "本地图片路径或 dataURL(不支持 http 外链); 留空显示“待上传二维码”占位"
+    },
+    {
+      "key": "signupLink",
+      "label": "报名链接",
+      "type": "string",
+      "required": false,
+      "note": "只用于宣传文案, 不出现在海报上"
+    }
+  ],
+  "template": {
+    "mode": {
+      "type": "string",
+      "enum": ["blue", "custom", "manual"],
+      "default": "blue",
+      "note": "blue=内置深蓝科技配色; custom=按素材图识别配色(需 style); manual=手动指定配色(需 manualStyle)"
+    },
+    "style": {
+      "type": "object",
+      "note": "mode=custom 时使用",
+      "properties": {
+        "primaryColor": "主色 #1A2F4A",
+        "secondaryColor": "强调色 #45E2EA",
+        "styleName": "风格名"
+      }
+    },
+    "manualStyle": {
+      "type": "object",
+      "note": "mode=manual 时使用, 字段同上; 缺省取 #1A2F4A / #45E2EA"
+    }
+  },
+  "rules": [
+    "topic 必填; 其余字段缺失会在 warnings 中提示, 渲染仍会成功",
+    "附加时区最多显示 2 个, 顺序为 欧中 > 美西 > 美东",
+    "courseFormat=线下培训 时必须提供 trainingLocation",
+    "图片字段优先传本地文件路径, 脚本会自动转 dataURL",
+    "输出尺寸 = 750*scale 宽, 高度按内容自适应"
+  ]
+}
+
+
+

@@ -1,0 +1,24 @@
+{
+  "name": "training-poster-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "培训海报生成器: JSON -> PNG, 本地无头浏览器渲染",
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "preview": "node scripts/preview.mjs",
+    "mcp": "node scripts/mcp.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "test": "node scripts/test.mjs",
+    "audit": "node scripts/audit.mjs",
+    "ui": "node scripts/open-ui.mjs",
+    "ui:close": "node scripts/close-ui.mjs",
+    "ui:status": "node scripts/status-ui.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.65.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
