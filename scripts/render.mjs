@@ -19,32 +19,41 @@ function output(payload, code = 0) {
 
 function parseArgs(argv) {
   const args = { scale: 2, out: 'poster.png' };
+  const requireValue = (flag, value) => {
+    if (value === undefined || value.startsWith('--')) throw new Error(`${flag} 缺少参数值`);
+    return value;
+  };
+  const requireNumber = (flag, value) => {
+    const numeric = Number(requireValue(flag, value));
+    if (!Number.isFinite(numeric)) throw new Error(`${flag} 需要数字, 收到 ${value}`);
+    return numeric;
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
     const value = argv[index + 1];
     switch (flag) {
       case '--data':
-        args.data = value;
+        args.data = requireValue(flag, value);
         index += 1;
         break;
       case '--json':
-        args.json = value;
+        args.json = requireValue(flag, value);
         index += 1;
         break;
       case '--out':
-        args.out = value;
+        args.out = requireValue(flag, value);
         index += 1;
         break;
       case '--scale':
-        args.scale = Number(value);
+        args.scale = requireNumber(flag, value);
         index += 1;
         break;
       case '--browser':
-        args.browser = value;
+        args.browser = requireValue(flag, value);
         index += 1;
         break;
       case '--timeout':
-        args.timeout = Number(value);
+        args.timeout = requireNumber(flag, value);
         index += 1;
         break;
       case '--help':

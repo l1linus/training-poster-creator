@@ -1,9 +1,9 @@
 {
   "name": "training-poster-skill",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
-  "description": "培训海报生成器: JSON -> PNG, 本地无头浏览器渲染",
+  "description": "培训海报生成器 / Training Poster Generator: 填表即出竖版培训海报, 本地渲染不上传",
   "scripts": {
     "render": "node scripts/render.mjs",
     "preview": "node scripts/preview.mjs",

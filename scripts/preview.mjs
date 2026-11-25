@@ -6,9 +6,8 @@
  *
  * 默认只监听 127.0.0.1。需要给别人看时用 --host 0.0.0.0, 并注意网络暴露。
  */
-import { spawn } from 'node:child_process';
-
 import { APP_DIR, INDEX_FILE } from '../lib/index-file.mjs';
+import { openBrowser } from '../lib/open-browser.mjs';
 import { startServer } from '../lib/server.mjs';
 
 function parseArgs(argv) {
@@ -27,20 +26,6 @@ function parseArgs(argv) {
     }
   }
   return args;
-}
-
-function openBrowser(url) {
-  try {
-    if (process.platform === 'win32') {
-      spawn('cmd', ['/c', 'start', '', url], { detached: true, stdio: 'ignore' }).unref();
-    } else if (process.platform === 'darwin') {
-      spawn('open', [url], { detached: true, stdio: 'ignore' }).unref();
-    } else {
-      spawn('xdg-open', [url], { detached: true, stdio: 'ignore' }).unref();
-    }
-  } catch {
-    // 打不开浏览器不影响服务, URL 已经打印
-  }
 }
 
 const args = parseArgs(process.argv.slice(2));

@@ -6,7 +6,7 @@
  *
  * 说明: 本机安全软件(如 Kaspersky)可能向浏览器注入请求, 不属于本工具, 统计时忽略。
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,13 +27,19 @@ function isLocal(url) {
 }
 
 async function main() {
-  const indexPath = path.join(APP_DIR, INDEX_FILE);
-  const html = readFileSync(indexPath, 'utf8');
-  check('csp', html.includes('Content-Security-Policy'), '限制外部资源与 connect');
-  const externalScript = /<script[^>]+src=["']https?:/i.test(html);
-  const loaderUrl = /lf3-short\.ibytedapm\.com|lf3-cdn-tos\.bytescm\.com|performance\.iife\.js/i.test(html);
-  check('no-telemetry', !externalScript && !loaderUrl, '无外部脚本 / 监控加载器');
-  check('no-remote-fonts', !/miaoda\.feishu\.cn\/fonts|fonts\.googleapis|gstatic/i.test(html), '字体不再走远程');
+  const pages = [
+    ['', INDEX_FILE],
+    ['-en', 'training-poster-generator-en.html'],
+  ].filter(([, file]) => existsSync(path.join(APP_DIR, file)));
+
+  for (const [suffix, file] of pages) {
+    const html = readFileSync(path.join(APP_DIR, file), 'utf8');
+    check(`csp${suffix}`, html.includes('Content-Security-Policy'), `限制外部资源与 connect (${file})`);
+    const externalScript = /<script[^>]+src=["']https?:/i.test(html);
+    const loaderUrl = /lf3-short\.ibytedapm\.com|lf3-cdn-tos\.bytescm\.com|performance\.iife\.js/i.test(html);
+    check(`no-telemetry${suffix}`, !externalScript && !loaderUrl, `无外部脚本 / 监控加载器 (${file})`);
+    check(`no-remote-fonts${suffix}`, !/miaoda\.feishu\.cn\/fonts|fonts\.googleapis|gstatic/i.test(html), `字体不走远程 (${file})`);
+  }
 
   const example = JSON.parse(readFileSync(path.join(HERE, '..', 'templates', 'example.json'), 'utf8'));
   const { server, port } = await startServer({ root: APP_DIR, indexFile: INDEX_FILE, job: example });
