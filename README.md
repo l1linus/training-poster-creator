@@ -7,8 +7,8 @@
 | | |
 | --- | --- |
 | 在线介绍页 · Landing page | <https://l1linus.github.io/training-poster-creator/> · [English](https://l1linus.github.io/training-poster-creator/index-en.html) |
-| 在线生成器 · Web generator | <https://l1linus.github.io/training-poster-creator/generator.html> · [English UI](https://l1linus.github.io/training-poster-creator/generator-en.html) |
-| 单文件版 · Single file | `培训海报生成器 Training Poster Generator.html` · `training-poster-generator-en.html` |
+| 在线生成器 · Generator | <https://l1linus.github.io/training-poster-creator/generator.html> · [English UI](https://l1linus.github.io/training-poster-creator/generator-en.html) |
+| 单文件版 · Single file | `培训海报生成器 Training Poster Generator.html`<br>`training-poster-generator-en.html` |
 
 单文件版双击用浏览器打开即可，无需安装、无需联网；两版右上角的地球按钮可互相切换。
 
