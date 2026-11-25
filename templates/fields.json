@@ -116,6 +116,37 @@
       "default": false
     },
     {
+      "key": "customTzEnabled",
+      "label": "显示自定义时区",
+      "type": "boolean",
+      "default": false,
+      "note": "与其他附加时区共用 2 个名额; 不自动换算, 由用户直接填写名称/日期/时刻"
+    },
+    {
+      "key": "customTzLabel",
+      "label": "自定义时区名称",
+      "type": "string",
+      "required": false,
+      "example": "伦敦时间",
+      "note": "留空时海报显示“自定义时间”"
+    },
+    {
+      "key": "customTzDate",
+      "label": "自定义时区日期",
+      "type": "string",
+      "required": false,
+      "example": "2026-03-02",
+      "note": "YYYY-MM-DD, 海报显示为 M月d日"
+    },
+    {
+      "key": "customTzTime",
+      "label": "自定义时区时刻",
+      "type": "string",
+      "required": false,
+      "example": "09:30",
+      "note": "HH:mm; 名称、日期、时刻都为空时该行不出图"
+    },
+    {
       "key": "qrcodeImage",
       "label": "报名二维码",
       "type": "string",

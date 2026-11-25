@@ -46,7 +46,7 @@
 
 ## 兜底
 
-公司要求 skill 形态，HTML 仅应急：解压网页版 zip，双击 `培训海报生成器.html`。
+公司要求 skill 形态，HTML 仅应急：解压网页版 zip，双击 `培训海报生成器 Training Poster Generator.html`。
 
 ## 隐私
 

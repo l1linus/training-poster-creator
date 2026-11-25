@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training Poster Generator · without the design queue</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232F63E6'/%3E%3Cpath d='M7 8h10M7 12h7M7 16h5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#F7F9FC;
+    --surface:#FFFFFF;
+    --ink:#0F1A2E;
+    --text:#1C2740;
+    --muted:#5C6880;
+    --muted-2:#8B95A9;
+    --line:#E7ECF5;
+    --line-2:#D9E0EE;
+    --primary:#2F63E6;
+    --primary-dark:#2450C4;
+    --primary-soft:#EDF3FF;
+    --primary-line:#D8E4FF;
+    --accent:#0FA3A0;
+    --max:1140px;
+    --radius:16px;
+    --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  [id]{scroll-margin-top:96px}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(15,26,46,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(15,26,46,.035) 1px,transparent 1px);
+    background-size:80px 80px;
+    mask-image:radial-gradient(ellipse 76% 52% at 50% 0%,#000 10%,transparent 74%);
+    -webkit-mask-image:radial-gradient(ellipse 76% 52% at 50% 0%,#000 10%,transparent 74%);
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    top:-380px;
+    left:50%;
+    width:1200px;
+    height:760px;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at 50% 50%,rgba(47,99,230,.10),rgba(47,99,230,.03) 45%,transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%;height:auto}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  ::selection{background:#CFE0FF;color:#0F1A2E}
+  .wrap{width:min(var(--max),calc(100% - 48px));margin:0 auto;position:relative;z-index:1}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.18em;color:var(--primary);text-transform:uppercase}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--primary);opacity:.5}
+  h1,h2,h3{font-weight:600;letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
+  .section{padding:96px 0;position:relative}
+  .section-head{max-width:720px;margin-bottom:48px}
+  .section-head h2{font-size:clamp(28px,3.1vw,38px);margin:16px 0 14px}
+  .section-head p{color:var(--muted);font-size:16px;max-width:560px}
+  .reveal{opacity:0;transition:opacity .8s ease}
+  .reveal.in{opacity:1}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transition:none}}
+
+  /* nav */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,border-color .3s,box-shadow .3s;border-bottom:1px solid transparent}
+  .nav.scrolled{background:rgba(255,255,255,.86);backdrop-filter:blur(16px);border-bottom-color:var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:600;letter-spacing:-.01em;font-size:15px}
+  .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(150deg,#4C7DF5,var(--primary) 55%,#1F45AE);display:grid;place-items:center;box-shadow:0 6px 16px -6px rgba(47,99,230,.6)}
+  .brand small{display:block;font-size:9px;letter-spacing:.14em;color:var(--muted-2);font-weight:400;margin-top:3px}
+  .nav-links{display:flex;align-items:center;gap:32px;font-size:13px;color:var(--muted)}
+  .nav-links a{transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{display:flex;align-items:center;gap:14px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:10px;font-size:14px;font-weight:500;border:1px solid var(--line-2);transition:background .2s,border-color .2s,color .2s;white-space:nowrap}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 10px 22px -12px rgba(47,99,230,.9)}
+  .btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark)}
+  .btn-ghost{background:#fff;color:var(--text)}
+  .btn-ghost:hover{border-color:#BFD2FF;color:var(--primary)}
+  .btn-sm{height:38px;padding:0 16px;font-size:13px}
+  /* lang-switch:start */
+  .lang-switch{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--line-2);background:#fff;color:var(--text);font-size:13px;font-weight:500;letter-spacing:0;white-space:nowrap;flex:0 0 auto;transition:border-color .2s,color .2s,background .2s}
+  .lang-switch:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+  .lang-switch svg{width:16px;height:16px;flex:0 0 auto;color:var(--primary)}
+  .nav-right{flex:0 0 auto}
+  /* lang-switch:end */
+  /* language switch */
+  .lang-switch{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--line-2);background:#fff;color:var(--text);font-size:13px;font-weight:500;letter-spacing:0;transition:border-color .2s,color .2s,background .2s}
+  .lang-switch:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+  .lang-switch svg{width:16px;height:16px;flex:0 0 auto;color:var(--primary)}
+
+  /* hero */
+  .hero{padding:172px 0 40px;position:relative}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center;min-height:580px}
+  .hero h1{font-size:clamp(38px,4.5vw,54px);line-height:1.2;margin:24px 0 22px;letter-spacing:-.035em}
+  .hero h1 em{font-style:normal;color:var(--primary)}
+  .lead{color:var(--muted);font-size:17px;line-height:1.85;max-width:470px}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+  .hero-art{position:relative;display:flex;justify-content:center}
+  .art-glow{position:absolute;width:420px;height:420px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(47,99,230,.16),transparent 66%);filter:blur(24px)}
+  .ring{position:absolute;width:530px;height:530px;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid rgba(47,99,230,.10);border-radius:50%;pointer-events:none}
+  .poster-shell{position:relative;width:332px;padding:10px;background:#fff;border:1px solid var(--line-2);border-radius:18px;box-shadow:0 30px 60px -26px rgba(15,26,46,.34),0 2px 8px rgba(15,26,46,.04)}
+  .poster-shell img{width:100%;border-radius:10px}
+
+  /* why cards */
+  .flow-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .flow-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:32px 30px;transition:border-color .25s,box-shadow .25s}
+  .flow-card:hover{border-color:var(--primary-line);box-shadow:0 18px 40px -28px rgba(47,99,230,.55)}
+  .flow-icon{width:40px;height:40px;border-radius:10px;background:var(--primary-soft);border:1px solid var(--primary-line);display:grid;place-items:center;margin-bottom:20px;color:var(--primary)}
+  .flow-card .idx{font-size:10px;letter-spacing:.16em;color:var(--muted-2)}
+  .flow-card h3{font-size:18px;margin:8px 0 9px}
+  .flow-card p{color:var(--muted);font-size:14px;line-height:1.8}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-2)}
+  .step{padding:30px 26px 28px;border-left:1px solid var(--line)}
+  .step:first-child{border-left:0;padding-left:0}
+  .step .no{font-size:10px;letter-spacing:.16em;color:var(--primary)}
+  .step h3{font-size:17px;margin:14px 0 8px}
+  .step p{color:var(--muted);font-size:13.5px;line-height:1.8}
+
+  /* screens */
+  .shot{position:relative;border:1px solid #DDE4F0;border-radius:16px;overflow:hidden;background:#0B1124;box-shadow:0 30px 60px -34px rgba(15,26,46,.45);
+    -webkit-mask-image:linear-gradient(180deg,#000 74%,transparent 100%);
+    mask-image:linear-gradient(180deg,#000 74%,transparent 100%)}
+  .shot img{width:100%;display:block}
+  .caption{display:flex;justify-content:space-between;gap:20px;margin-top:18px;font-size:11px;letter-spacing:.06em;color:var(--muted-2)}
+
+  /* advantages */
+  .adv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .adv{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px;display:flex;flex-direction:column;transition:border-color .25s,box-shadow .25s}
+  .adv:hover{border-color:var(--primary-line);box-shadow:0 18px 40px -30px rgba(47,99,230,.5)}
+  .adv .k{font-size:10px;letter-spacing:.16em;color:var(--muted-2)}
+  .adv h3{font-size:18px;margin:10px 0 8px}
+  .adv p{font-size:13.5px;color:var(--muted);line-height:1.8;margin-bottom:18px}
+  .adv-meta{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line-2);font-size:11.5px;color:var(--muted-2);letter-spacing:.02em}
+  .adv-feature{background:#F4F8FF;border-color:var(--primary-line)}
+  .adv-feature .k{color:var(--primary)}
+
+  /* access */
+  .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+  .mode{border:1px solid var(--primary-line);border-radius:14px;padding:26px;background:#F6F9FF}
+  .mode h3{font-size:17px;display:flex;align-items:center;gap:9px}
+  .mode h3 span{font-size:9px;letter-spacing:.08em;color:var(--primary);border:1px solid var(--primary-line);background:#fff;border-radius:4px;padding:2px 6px}
+  .mode p{font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.8}
+  .platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .platform{border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--surface);transition:border-color .2s,box-shadow .2s}
+  .platform:hover{border-color:var(--primary-line);box-shadow:0 14px 30px -24px rgba(47,99,230,.7)}
+  .platform .p-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+  .platform h3{font-size:15px}
+  .platform .p-tag{font-size:9px;letter-spacing:.08em;color:var(--muted-2);border:1px solid var(--line);border-radius:4px;padding:2px 6px;white-space:nowrap}
+  .platform p{font-size:13px;color:var(--muted);line-height:1.75}
+  .note{margin-top:18px;font-size:12.5px;color:var(--muted-2);line-height:1.8}
+
+  /* cta */
+  .cta{padding:16px 0 96px}
+  .cta-panel{position:relative;overflow:hidden;border:1px solid var(--primary-line);border-radius:22px;background:linear-gradient(150deg,#EFF5FF,#FBFDFF 58%,#F1F7FF);padding:56px 48px;text-align:center;box-shadow:0 30px 70px -50px rgba(47,99,230,.6)}
+  .cta-panel h2{font-size:clamp(28px,3.4vw,40px)}
+  .cta-panel p{color:var(--muted);margin:14px auto 28px;max-width:440px;font-size:14.5px}
+  .repo-link{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 24px;border-radius:10px;background:var(--primary);color:#fff;font-size:14px;font-weight:500;box-shadow:0 10px 22px -12px rgba(47,99,230,.9);transition:background .2s}
+  .repo-link:hover{background:var(--primary-dark)}
+  .repo-link span{font-size:12px;opacity:.85}
+  .cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .repo-link-ghost{background:#fff;color:var(--primary);border:1px solid var(--primary-line);box-shadow:0 10px 22px -18px rgba(47,99,230,.7)}
+  .repo-link-ghost:hover{background:#F4F8FF;border-color:#C5D8FA}
+
+  footer{border-top:1px solid var(--line);padding:32px 0 42px;background:rgba(255,255,255,.6)}
+  footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  footer p{font-size:10px;letter-spacing:.1em;color:var(--muted-2)}
+  .foot-brand{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)}
+  .foot-brand .mark{width:26px;height:26px;border-radius:8px}
+
+  @media (max-width:1080px){
+    .hero-grid{grid-template-columns:1fr;gap:56px;min-height:0}
+    .hero-art{margin-top:8px}
+    .poster-shell{width:270px}
+    .ring{width:440px;height:440px}
+    .flow-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .step:nth-child(3){border-left:0;padding-left:0}
+    .step:nth-child(n+3){border-top:1px solid var(--line)}
+    .adv-grid{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
+  @media (max-width:720px){
+    .wrap{width:calc(100% - 36px)}
+    .hero{padding-top:128px}
+    .hero h1{font-size:34px}
+    .lead{font-size:16px}
+    .steps{grid-template-columns:1fr}
+    .step{border-left:0!important;padding-left:0!important;border-top:1px solid var(--line)}
+    .step:first-child{border-top:0}
+    .adv-grid{grid-template-columns:1fr}
+    .mode-grid,.platform-grid{grid-template-columns:1fr}
+    .cta-panel{padding:44px 22px}
+    .cta-actions{flex-direction:column;align-items:center;gap:10px}
+    .cta-actions a{width:216px;justify-content:center;padding:0 16px}
+    .section{padding:72px 0}
+    .caption{flex-direction:column;gap:4px}
+    .ring{display:none}
+    .art-glow{width:280px;height:280px}
+  }
+  /* English layout tweaks */
+  .bn-short{display:none}
+  @media (max-width:760px){
+    .brand small{display:none}
+    .brand span{font-size:13px;line-height:1.2}
+    .bn-full{display:none}
+    .bn-short{display:inline}
+    .nav-right{gap:8px}
+    .btn-sm{padding:0 13px}
+  }
+</style>
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Back to top">
+      <span class="mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <rect x="3.5" y="3" width="17" height="18" rx="3" stroke="#fff" stroke-width="1.5"/>
+          <path d="M7.5 8h9M7.5 12h6M7.5 16h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="17.5" cy="16" r="2.2" fill="#BFE9E7"/>
+        </svg>
+      </span>
+      <span><span class="bn-full">Training Poster Generator</span><span class="bn-short">Poster Generator</span><small>Runs on your own machine</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Page sections">
+      <a href="#why">Use cases</a>
+      <a href="#advantages">Advantages</a>
+      <a href="#screens">Interface</a>
+      <a href="#access">Get it</a>
+    </nav>
+    <div class="nav-right">
+      <a class="lang-switch" href="index.html" hreflang="zh-CN" title="切换到中文" aria-label="切换到中文"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><ellipse cx="12" cy="12" rx="4.2" ry="9"/></svg><span>中文</span></a>
+      <a class="btn btn-primary btn-sm" href="https://github.com/l1linus/training-poster-creator" target="_blank" rel="noopener">Get the tool</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">For internal training</div>
+        <h1>Training posters,<br>without the<br><em>design queue</em>.</h1>
+        <p class="lead">Type the topic, the speaker and the time. Pick a template, export a poster. A minute from start to finish, and nothing you type leaves your machine.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#screens">See it work</a>
+          <a class="btn btn-ghost" href="#access">Get the tool</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="art-glow"></div>
+        <div class="ring"></div>
+        <div class="poster-shell">
+          <img src="assets/poster-demo-en.jpg" alt="A vertical training poster exported from the generator" width="1500" height="2844">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="why">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Before the session</div>
+        <h2>One image. Every question answered.</h2>
+        <p>Topic, speaker and time in a single place, so the announcement settles the basics before anyone has to ask.</p>
+      </div>
+
+      <div class="flow-grid">
+        <article class="flow-card reveal">
+          <div class="flow-icon" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M8 3v3M16 3v3M3.5 9.5h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="idx">01 Post it early</div>
+          <h3>Send it out while it matters</h3>
+          <p>Date, speaker and key points in one image, with a sign-up code if you need one.</p>
+        </article>
+        <article class="flow-card reveal">
+          <div class="flow-icon" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="18" cy="17" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+          <div class="idx">02 Draft first</div>
+          <h3>Post before the plan is final</h3>
+          <p>A topic is enough for version one. Add the details later and export again.</p>
+        </article>
+        <article class="flow-card reveal">
+          <div class="flow-icon" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="4" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="13" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="13" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+          <div class="idx">03 Keep the series</div>
+          <h3>One template, all season</h3>
+          <p>Reuse the same layout, so every session in a series looks like it belongs.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Four steps</div>
+        <h2>Blank page to PNG.</h2>
+      </div>
+      <div class="steps">
+        <article class="step reveal">
+          <div class="no">Step 1</div>
+          <h3>Type the details</h3>
+          <p>The topic alone gets you started; speaker, highlights and time can follow.</p>
+        </article>
+        <article class="step reveal">
+          <div class="no">Step 2</div>
+          <h3>Pick a style</h3>
+          <p>Use the built-in template, or upload artwork and let it pull the colors.</p>
+        </article>
+        <article class="step reveal">
+          <div class="no">Step 3</div>
+          <h3>Watch the preview</h3>
+          <p>Live on the right, with time zones worked out from the session date.</p>
+        </article>
+        <article class="step reveal">
+          <div class="no">Step 4</div>
+          <h3>Export</h3>
+          <p>One click for a high-resolution PNG, ready to post.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="screens" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">The workbench</div>
+        <h2>Form on the left. Poster on the right.</h2>
+        <p>Only the controls you need, and the result as you type it.</p>
+      </div>
+      <div class="shot reveal">
+        <img src="assets/workbench-core-en.png" alt="The workbench: training form on the left, live poster preview on the right" width="2848" height="1200">
+      </div>
+      <div class="caption">
+        <span>Sample data is fictional; the speaker is a placeholder silhouette</span>
+        <span>Windows · Edge · 2x</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="advantages" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Why it works</div>
+        <h2>The work you skip.</h2>
+        <p>No design queue, no revision rounds, no files to hand off and chase.</p>
+      </div>
+      <div class="adv-grid">
+        <article class="adv adv-feature reveal">
+          <div class="k">Privacy</div>
+          <h3>Nothing leaves your machine</h3>
+          <p>No account, no uploads. Photos, QR codes and form content stay local, and are gone when you close the page.</p>
+          <div class="adv-meta">0 accounts · 0 uploads</div>
+        </article>
+        <article class="adv reveal">
+          <div class="k">Color</div>
+          <h3>Your brand colors, exactly</h3>
+          <p>Enter a CMYK value, pick from the palette, or let an uploaded artwork set the palette. The layout holds either way.</p>
+          <div class="adv-meta">CMYK input · on brand</div>
+        </article>
+        <article class="adv reveal">
+          <div class="k">Time zones</div>
+          <h3>Time zones, handled</h3>
+          <p>Enter Beijing time. Central Europe, US West and US East follow, with daylight saving picked by the session date.</p>
+          <div class="adv-meta">3 zones · automatic</div>
+        </article>
+        <article class="adv reveal">
+          <div class="k">Skill level</div>
+          <h3>No design skills</h3>
+          <p>Type, size and spacing are already set. Add the text and a photo, and the face is centered for you.</p>
+          <div class="adv-meta">1500 px portrait · one-click export</div>
+        </article>
+        <article class="adv reveal">
+          <div class="k">Environment</div>
+          <h3>Works offline</h3>
+          <p>A single web page you can double-click. Installed as a Skill, an agent can run it for you instead.</p>
+          <div class="adv-meta">No install · works offline</div>
+        </article>
+        <article class="adv reveal">
+          <div class="k">Sign-ups</div>
+          <h3>Sign-ups on the poster</h3>
+          <p>Add a QR code and people register by scanning it. The same image works for print and for forwarding.</p>
+          <div class="adv-meta">Scan to sign up</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="access" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Getting it</div>
+        <h2>Two ways in.</h2>
+        <p>Both start from the GitHub repository. Download the zip from Releases for the complete folder.</p>
+      </div>
+
+      <div class="mode-grid reveal">
+        <article class="mode">
+          <h3>Inside an agent <span>Recommended</span></h3>
+          <p>Install it as a Skill, describe what you need, and the agent opens the workbench for you.</p>
+        </article>
+        <article class="mode">
+          <h3>Just open the page <span>No setup</span></h3>
+          <p>Double-click the HTML file. Handy for a one-off poster, or a machine with no network.</p>
+        </article>
+      </div>
+
+      <div class="platform-grid reveal">
+        <article class="platform">
+          <div class="p-top"><h3>WorkBuddy</h3><span class="p-tag">Skill</span></div>
+          <p>Drop the folder into your skills directory and start a new conversation.</p>
+        </article>
+        <article class="platform">
+          <div class="p-top"><h3>Claude Code / DSH</h3><span class="p-tag">SKILL.md</span></div>
+          <p>Any runtime that reads SKILL.md works with the complete folder.</p>
+        </article>
+        <article class="platform">
+          <div class="p-top"><h3>Other local agents</h3><span class="p-tag">Agent</span></div>
+          <p>Any agent that can run commands will start it and hand back the local address.</p>
+        </article>
+        <article class="platform">
+          <div class="p-top"><h3>MCP clients</h3><span class="p-tag">MCP</span></div>
+          <p>Connect once, then open the workbench or render from the conversation.</p>
+        </article>
+      </div>
+
+      <p class="note reveal">Nothing to install first: the opening run prepares its own runtime and needs the network once. Already on Node.js 20 or newer? That step is skipped.</p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="eyebrow" style="justify-content:center;margin-bottom:18px">Get started</div>
+        <h2>Try it on your next session.</h2>
+        <p>Download it, unzip it, open it.</p>
+        <div class="cta-actions">
+          <a class="repo-link" href="https://github.com/l1linus/training-poster-creator" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A7.995 7.995 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            Open the GitHub repository
+            <span aria-hidden="true">↗</span>
+          </a>
+          <a class="repo-link repo-link-ghost" href="generator-en.html" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1.6" y="2.4" width="12.8" height="9.6" rx="1.6" stroke="currentColor" stroke-width="1.3"/><path d="M4.4 14.4h7.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.6 5.6h4.2M4.6 8.2h6.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Open the web generator
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-brand">
+      <span class="mark" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3" width="17" height="18" rx="3" stroke="#fff" stroke-width="1.5"/><path d="M7.5 8h9M7.5 12h6M7.5 16h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+      Training Poster Generator
+    </div>
+    <p>Runs locally · PNG export · nothing uploaded</p>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+</script>
+</body>
+</html>

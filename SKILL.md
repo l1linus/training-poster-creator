@@ -3,7 +3,7 @@ name: training-poster
 description: 生成竖版培训/课程宣传海报 PNG（培训海报、课程海报、活动海报、promotion poster），或打开海报编辑 Web UI 供人工调整。当用户说“开始生成培训海报 / 做一张培训海报 / 做张海报 / 生成宣传图 / 导出 PNG / 改配色再出一版”，或要求“打开海报编辑器 / 工作台 / 预览界面自己调”时使用。默认打开 Web UI 让用户自己调，只有明确批量/无人值守才直接出图。支持线上与线下培训、北京时间自动换算欧中/美西/美东、按主色自定义配色；输出 750px 宽、默认 2 倍图（1500px 宽）的 PNG。
 ---
 
-# 培训海报生成器（本地渲染）
+# 培训海报生成器（本地渲染） · [🌐 English](SKILL.en.md)
 
 把结构化培训信息渲染成一张竖版科技风海报 PNG。**不依赖飞书妙搭运行时，不需要登录、不需要网络接口**；只在本机起一个临时静态服务，用无头浏览器截图。
 
@@ -44,7 +44,7 @@ description: 生成竖版培训/课程宣传海报 PNG（培训海报、课程�
 | 批量、定时、无人值守出图 | `render_poster` / `render.mjs` |
 | 只问“能不能做/怎么用” | 说明两种方式，默认推荐打开工作台 |
 
-打开工作台后**不要**再调用 `render_poster` 替用户出图，也不要修改 `培训海报生成器.html`；等用户自己导出。
+打开工作台后**不要**再调用 `render_poster` 替用户出图，也不要修改 `培训海报生成器 Training Poster Generator.html`；等用户自己导出。
 
 ## 隐私
 
@@ -231,28 +231,32 @@ Windows 上如果客户端找不到 `node`，把 `command` 换成 `node.exe` 的
 ## 目录
 
 ```
-SKILL.md                 本说明
-培训海报生成器.html       单文件 Web 应用(双击可用; 服务端用 /#/render 渲染)
-lib/server.mjs           单文件静态服务(暴露 /__job.json、/__health)
-lib/open-browser.mjs     用系统浏览器打开 URL
-lib/ui.mjs               工作台启动/复用/关闭
-lib/browser.mjs          跨平台查找 Edge/Chrome
-lib/render-poster.mjs    渲染核心(校验 + 截图 + PNG 尺寸校验)
-scripts/render.mjs       CLI: JSON -> PNG
-scripts/bootstrap.ps1    首次一键(Windows): 检测/下载 Node + 启动工作台
-scripts/bootstrap.sh     首次一键(macOS/Linux)
-scripts/preview.mjs      前台启动 Web UI(阻塞)
-scripts/open-ui.mjs      后台启动工作台并返回 URL
-scripts/close-ui.mjs     关闭工作台
-scripts/status-ui.mjs    查看工作台状态
-scripts/mcp.mjs          MCP stdio server
-scripts/doctor.mjs       环境自检
-scripts/test.mjs         端到端自测
-scripts/audit.mjs        隐私自检(无外部脚本/无成功外网请求)
-USAGE.md                 使用指引(含 WorkBuddy 接入)
-templates/example.json   可直接跑的示例
-templates/fields.json    字段说明
+SKILL.md                                       本说明
+SKILL.en.md                                    英文说明
+培训海报生成器 Training Poster Generator.html  单文件 Web 应用(双击可用; 服务端用 /#/render 渲染)
+training-poster-generator-en.html              英文界面(同为单文件)
+lib/index-file.mjs                             定位中文界面文件(兼容旧文件名)
+lib/server.mjs                                 单文件静态服务(暴露 /__job.json、/__health)
+lib/open-browser.mjs                           用系统浏览器打开 URL
+lib/ui.mjs                                     工作台启动/复用/关闭
+lib/browser.mjs                                跨平台查找 Edge/Chrome
+lib/render-poster.mjs                          渲染核心(校验 + 截图 + PNG 尺寸校验)
+scripts/render.mjs                             CLI: JSON -> PNG
+scripts/bootstrap.ps1                          首次一键(Windows): 检测/下载 Node + 启动工作台
+scripts/bootstrap.sh                           首次一键(macOS/Linux)
+scripts/preview.mjs                            前台启动 Web UI(阻塞)
+scripts/open-ui.mjs                            后台启动工作台并返回 URL
+scripts/close-ui.mjs                           关闭工作台
+scripts/status-ui.mjs                          查看工作台状态
+scripts/mcp.mjs                                MCP stdio server
+scripts/doctor.mjs                             环境自检
+scripts/test.mjs                               端到端自测
+scripts/audit.mjs                              隐私自检(无外部脚本/无成功外网请求)
+使用说明 Read Me.txt                           两种用法的快速上手指引
+USAGE.md                                       使用指引(含 WorkBuddy 接入)
+templates/example.json                         可直接跑的示例
+templates/fields.json                          字段说明
 ```
 
-UI 是单文件构建（Vite standalone、hash 路由）。改版式后需从原妙搭源码重新生成 `培训海报生成器.html`。
+UI 是单文件构建（Vite standalone、hash 路由）。改版式后需从原妙搭源码重新生成 `培训海报生成器 Training Poster Generator.html`。
 

@@ -7,14 +7,9 @@
  * 默认只监听 127.0.0.1。需要给别人看时用 --host 0.0.0.0, 并注意网络暴露。
  */
 import { spawn } from 'node:child_process';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
+import { APP_DIR, INDEX_FILE } from '../lib/index-file.mjs';
 import { startServer } from '../lib/server.mjs';
-
-const HERE = path.dirname(fileURLToPath(import.meta.url));
-const APP_DIR = path.resolve(HERE, '..');
-const INDEX_FILE = '培训海报生成器.html';
 
 function parseArgs(argv) {
   const args = { port: 4173, host: '127.0.0.1', open: true };

@@ -94,6 +94,16 @@
   .btn-ghost{background:#fff;color:var(--text)}
   .btn-ghost:hover{border-color:#BFD2FF;color:var(--primary)}
   .btn-sm{height:38px;padding:0 16px;font-size:13px}
+  /* lang-switch:start */
+  .lang-switch{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--line-2);background:#fff;color:var(--text);font-size:13px;font-weight:500;letter-spacing:0;white-space:nowrap;flex:0 0 auto;transition:border-color .2s,color .2s,background .2s}
+  .lang-switch:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+  .lang-switch svg{width:16px;height:16px;flex:0 0 auto;color:var(--primary)}
+  .nav-right{flex:0 0 auto}
+  /* lang-switch:end */
+  /* language switch */
+  .lang-switch{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--line-2);background:#fff;color:var(--text);font-size:13px;font-weight:500;letter-spacing:0;transition:border-color .2s,color .2s,background .2s}
+  .lang-switch:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+  .lang-switch svg{width:16px;height:16px;flex:0 0 auto;color:var(--primary)}
 
   /* hero */
   .hero{padding:172px 0 40px;position:relative}
@@ -229,6 +239,7 @@
       <a href="#access">获取</a>
     </nav>
     <div class="nav-right">
+      <a class="lang-switch" href="index-en.html" hreflang="en" title="Switch to English" aria-label="Switch to English"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><ellipse cx="12" cy="12" rx="4.2" ry="9"/></svg><span>EN</span></a>
       <a class="btn btn-primary btn-sm" href="https://github.com/l1linus/training-poster-creator" target="_blank" rel="noopener">获取工具</a>
     </div>
   </div>
@@ -395,7 +406,7 @@
       <div class="section-head reveal">
         <div class="eyebrow">获取方式</div>
         <h2>两种用法，看场景选</h2>
-        <p>工具通过 GitHub 仓库分发，下载完整文件夹后解压即可使用。</p>
+        <p>工具通过 GitHub 仓库分发，在 Releases 下载打包好的 zip，解压即可得到完整文件夹。</p>
       </div>
 
       <div class="mode-grid reveal">
